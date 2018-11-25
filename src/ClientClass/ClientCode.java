@@ -16,6 +16,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import GameClass.Player;
 
 /**
  *
@@ -25,6 +26,9 @@ public class ClientCode {
     private ServerPokerTable spt;
     public static int port;
     public static String IPaddress;
+    public static String nama;
+    public Player ClientPlayer;
+    public Socket ClientSocket;
     
     public static void main(String args[]) throws IOException{
        ClientCode Ccode = new ClientCode();
@@ -51,6 +55,7 @@ public class ClientCode {
        System.out.println("" +Cgui.getTombol());
        port = Integer.parseInt(Cgui.getTextport());
        IPaddress = Cgui.getTextIP();
+       nama = Cgui.getNama();
        
        Cgui.dispose();
     }
@@ -59,13 +64,23 @@ public class ClientCode {
     //membuat koneksi dan membuka GUI PokerTable
     public void OpenGUIPoker() throws IOException
     {
-        ClientPokerTable Cpt = new ClientPokerTable(port, IPaddress);
-        Cpt.setVisible(true);
          try{
-            Socket sk = new Socket(IPaddress,port);
-            DataInputStream dis = new DataInputStream(sk.getInputStream());
+            this.ClientSocket= new Socket(IPaddress,port);
+            DataInputStream dis = new DataInputStream(ClientSocket.getInputStream());
+            
+            ClientPokerTable Cpt = new ClientPokerTable(port, IPaddress);
+            Cpt.setVisible(true);
+            //menerima input no 1 yaitu no player client
             String put = dis.readUTF();
             Cpt.tambahText(put);
+            
+            //inisiasi class player
+            this.ClientPlayer=new Player(nama);
+            Cpt.tambahText("Nama anda adalah " + ClientPlayer.getNama());
+            
+            //mengirim data player ke server
+            DataOutputStream dos = new DataOutputStream(ClientSocket.getOutputStream());
+            dos.writeUTF(ClientPlayer.getNama());
         }
         catch(IOException e)
         {

@@ -5,6 +5,7 @@
  */
 package ServerClass;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,6 +21,7 @@ import java.util.logging.Logger;
 public class ServerCode {
     private ServerPokerTable spt;
     public static int port;
+    private ServerSocket serversocket;
     
     public static void main(String args[]) throws IOException{
        ServerCode Scode = new ServerCode();
@@ -56,14 +58,20 @@ public class ServerCode {
         //inisiasi form pokertable
        ServerPokerTable Spt = new ServerPokerTable(port);
        //membuat server pokertable
-       ServerSocket ss = new ServerSocket(1236);
+       this.serversocket = new ServerSocket(1236);
        
        Spt.setVisible(true);
         boolean keadaan = true;
         int urut=1;
+        //membuka server
         while (keadaan){
-            new server(ss.accept(),urut).start();
+            new server(serversocket.accept(),urut).start();
             Spt.tambahText("Client ke - " + urut + " memasuki game poker");
+            DataInputStream dis = new DataInputStream(server.sc.getInputStream());
+            
+            //menerima input no 1 yaitu no player client
+            String put = dis.readUTF();
+            Spt.tambahText("Nama Player ke - " + urut +" adalah " +put);
             urut++;
         }
     }
@@ -81,7 +89,9 @@ class server extends Thread{
         {
             try {
                 DataOutputStream dos = new DataOutputStream(sc.getOutputStream());
+                //mengirim no player yang masuk
                 dos.writeUTF("Selamat Datang Player ke-" + angka);
+                
             } catch (IOException ex) {
                 Logger.getLogger(server.class.getName()).log(Level.SEVERE, null, ex);
             }
