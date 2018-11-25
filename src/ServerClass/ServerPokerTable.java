@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Poker;
+package ServerClass;
 
 /**
  *
@@ -17,7 +17,14 @@ public class ServerPokerTable extends javax.swing.JFrame {
     public ServerPokerTable(int port) {
         this.port=port;
         initComponents();
-        jTextArea1.append("Port Anda adalah " + port);
+        jTextArea1.append("Anda berhasil membuat server\n");
+        jTextArea1.append("Port Anda adalah " + port + "\n");
+        jTextArea1.append("Silahkan Menunggu Pemain.\n");
+    }
+    
+    public void tambahText(String newline)
+    {
+        jTextArea1.append(newline + "\n");
     }
 
     /**
@@ -37,7 +44,6 @@ public class ServerPokerTable extends javax.swing.JFrame {
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
-        jTextArea1.setText("SUCCESS!\n");
         jScrollPane1.setViewportView(jTextArea1);
 
         jLabel1.setIcon(new javax.swing.ImageIcon("E:\\kuliah\\Semester 5\\Enterprise\\poker.png")); // NOI18N
